@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    container_name: godown-postgres
+    environment:
+      - POSTGRES_PASSWORD=interiit-postgres
+    volumes:
+      - ./backend/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+  backend:
+    build: ./backend
+    image: godown-backend
+    restart: unless-stopped
+    container_name: godown-backend
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    network_mode: host
+  frontend:
+    build: ./frontend
+    image: godown-frontend
+    restart: unless-stopped
+    container_name: godown-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend

@@ -3,14 +3,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function ItemDetails({ item }: { item: ItemProps | undefined }) {
-  if (!item) return (
-    <div className="flex items-center justify-center h-screen">
-      <p className="text-2xl text-gray-500">Select an item to view details</p>
-    </div>
-  );
-
+  
   const [address, setAddress] = useState<string>("");
   useEffect(() => {
+    if (!item) return;
     try {
       ifetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/address/${item.godownId}`).then((data) => {
         if (data.success) setAddress(data.data);
@@ -21,6 +17,12 @@ export default function ItemDetails({ item }: { item: ItemProps | undefined }) {
       toast.error("Failed to fetch godowns");
     }
   }, [item]);
+  
+  if (!item) return (
+    <div className="flex items-center justify-center h-screen">
+      <p className="text-2xl text-gray-500">Select an item to view details</p>
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden my-4">

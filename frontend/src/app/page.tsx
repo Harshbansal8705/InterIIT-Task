@@ -20,7 +20,7 @@ export default function Home() {
       ifetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/godowns`)
       .then((data) => {
         if (data.success)
-          setGodowns(data.data.map((godown: any) => ({
+          setGodowns(data.data.map((godown: {name: string, id: string}) => ({
               id: godown.id,
               label: godown.name,
               type: "godown",
@@ -50,7 +50,7 @@ export default function Home() {
   }, []);
 
   let token = null;
-  if (typeof window != undefined) {
+  if (typeof window != 'undefined') {
     token = localStorage.getItem("token");
     if (!token) {
       return router.push("/auth");

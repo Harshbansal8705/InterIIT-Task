@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const port = 8000;
 
-console.log(process.env.JWT_SECRET);
+console.log(process.env.JWT_SECRET, process.env.DATABASE_URL);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

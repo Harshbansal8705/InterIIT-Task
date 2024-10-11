@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 export interface GodownItemProps {
   id: string;
   label: string;

@@ -1,4 +1,4 @@
-import { GodownItemProps, ifetch } from "@/utils";
+import { GodownItemProps, ifetch, ItemProps } from "@/utils";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -14,7 +14,7 @@ export default function GodownItem({ id,
   list: GodownItemProps[],
   type: "godown" | "item",
   status: "loaded" | "loading" | "not loaded",
-  setItem: any,
+  setItem: (item: ItemProps) => void,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [subgodowns, setSubgodowns] = useState<GodownItemProps[]>(list);
@@ -50,13 +50,13 @@ export default function GodownItem({ id,
                   toast.error(data.error);
                   return;
                 }
-                const newData = [...data.data.subgodowns.map((godown: any) => ({
+                const newData = [...data.data.subgodowns.map((godown: { id: string, name: string }) => ({
                   id: godown.id,
                   label: godown.name,
                   type: "godown",
                   list: [],
                   status: "not loaded"
-                })), ...data.data.items.map((item: any) => ({
+                })), ...data.data.items.map((item: ItemProps) => ({
                   id: item.id,
                   label: item.name,
                   type: "item",

@@ -1,21 +1,32 @@
 'use client';
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function Login() {
+  return (
+    <Suspense>
+      <Auth />
+    </Suspense>
+  )
+}
+
+function Auth() {
   const params = useSearchParams();
   const router = useRouter();
   const token = params.get("token");
   const error = params.get("error");
   console.log(params);
-  if (token) {
-    if (typeof window != undefined) {
-      localStorage.setItem("token", token.toString());
-      router.push("/");
+  useEffect(() => {
+    if (token) {
+      if (typeof window != 'undefined') {
+        localStorage.setItem("token", token.toString());
+        router.push("/");
+      }
+    } else if (error) {
+      toast.error(error);
     }
-  } else if (error) {
-    toast.error(error);
-  }
+  }, [])
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-200 to-indigo-300">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full text-center">
