@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    container_name: godown-postgres
+    environment:
+      - POSTGRES_PASSWORD=interiit-postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  db-data:
