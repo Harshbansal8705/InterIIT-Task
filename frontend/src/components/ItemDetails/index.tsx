@@ -18,14 +18,14 @@ export default function ItemDetails({ item, itemLoading }: { item: ItemProps | u
     }
   }, [item]);
 
-  if (!item) return (
-    <div className="flex items-center justify-center h-screen">
-      <p className="text-2xl text-gray-500">Select an item to view details</p>
-    </div>
-  );
-
   if (itemLoading) {
     return <Loading />;
+  } else if (!item) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl text-gray-500">Select an item to view details</p>
+      </div>
+    );
   } else {
     return (
       <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden my-4">
