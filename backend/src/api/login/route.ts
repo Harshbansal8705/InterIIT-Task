@@ -12,7 +12,7 @@ export async function googleAuthCallback(req: any, res: any) {
   const { code } = req.query;
 
   if (!code) {
-    return res.redirect('http://localhost:3000/auth?error=No%20code%20provided');
+    return res.redirect(`${process.env.CLIENT_URL}/auth?error=No%20code%20provided`);
   }
 
   try {
@@ -34,11 +34,11 @@ export async function googleAuthCallback(req: any, res: any) {
     const googleUser = jwt.decode(id_token) as any;
 
     if (!googleUser) {
-      return res.redirect('http://localhost:3000/auth?error=Failed%20to%20decode%20Google%20token');
+      return res.redirect(`${process.env.CLIENT_URL}/auth?error=Failed%20to%20decode%20Google%20token`);
     }
 
     if (googleUser.email.split('@')[1] !== 'kgpian.iitkgp.ac.in') {
-      return res.redirect('http://localhost:3000/auth?error=Only%20IIT%20Kharagpur%20students%20are%20allowed');
+      return res.redirect(`${process.env.CLIENT_URL}/auth?error=Only%20IIT%20Kharagpur%20students%20are%20allowed`);
     }
 
     const appToken = jwt.sign(
@@ -47,9 +47,9 @@ export async function googleAuthCallback(req: any, res: any) {
       { expiresIn: '30d' }
     );
 
-    res.redirect(`http://localhost:3000/auth?token=${appToken}`);
+    res.redirect(`${process.env.CLIENT_URL}/auth?token=${appToken}`);
   } catch (error) {
     console.error(error);
-    return res.redirect('http://localhost:3000/auth?error=Failed%20to%20authenticate%20with%20Google');
+    return res.redirect(`${process.env.CLIENT_URL}/auth?error=Failed%20to%20authenticate%20with%20Google`);
   }
 }

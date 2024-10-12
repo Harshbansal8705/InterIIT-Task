@@ -1,6 +1,7 @@
 'use client';
 import GodownItem from "@/components/GodownItem";
 import ItemDetails from "@/components/ItemDetails";
+import Loading from "@/components/Loading";
 import { GodownItemProps, ifetch, ItemProps } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,37 +14,38 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // To control the mobile menu
   const router = useRouter();
   const [userEmail, setUserEmail] = useState(null);
+  const [itemLoading, setItemLoading] = useState(false);
 
   useEffect(() => {
     if (!userEmail) return;
     try {
       ifetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/godowns`)
-      .then((data) => {
-        if (data.success)
-          setGodowns(data.data.map((godown: {name: string, id: string}) => ({
+        .then((data) => {
+          if (data.success)
+            setGodowns(data.data.map((godown: { name: string, id: string }) => ({
               id: godown.id,
               label: godown.name,
               type: "godown",
               list: [],
               status: "not loaded"
             })))
-            else toast.error(data.error);
+          else toast.error(data.error);
         });
     } catch (error) {
       console.error("Error fetching godowns:", error);
       toast.error("Failed to fetch godowns");
     }
   }, [userEmail])
-  
+
   useEffect(() => {
     try {
       ifetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`)
-      .then((data) => {
-        console.log("Here's the data", data);
+        .then((data) => {
+          console.log("Here's the data", data);
           if (data.success) setUserEmail(data.data.email);
           else toast.error(data.error);
         });
-      } catch (error) {
+    } catch (error) {
       console.error("Error fetching user:", error);
       toast.error("Failed to fetch user");
     }
@@ -53,15 +55,17 @@ export default function Home() {
   if (typeof window != 'undefined') {
     token = localStorage.getItem("token");
     if (!token) {
-      return router.push("/auth");
+      router.push("/auth");
     }
   }
-  
+
   if (!userEmail) {
-    return "Loading...";
+    return (
+      <Loading />
+    );
   }
 
-  return (
+  else return (
     <div className="flex flex-col md:flex-row w-screen h-screen overflow-hidden bg-gray-50">
       {/* Hamburger Icon for Mobile */}
       <button
@@ -107,12 +111,14 @@ export default function Home() {
           list={godowns}
           status="loaded"
           setItem={setItem}
+          itemLoading={itemLoading}
+          setItemLoading={setItemLoading}
         />
       </nav>
 
       {/* Main content */}
       <main className="flex-1 p-4 bg-white overflow-auto">
-        <ItemDetails item={item} />
+        <ItemDetails item={item} itemLoading={itemLoading} />
       </main>
 
       {/* Background overlay when the menu is open on mobile */}
